@@ -2,7 +2,7 @@
 // It drives the running page (default http://127.0.0.1:8073, the real HackRF) with Chrome headless and records
 // the screen through the DevTools protocol. IT TRANSMITS: run it only with a licence, a message that carries
 // your callsign and TX_ENABLE=1. It refuses to go on if the frequency does not look clear.
-//   node tools/video.mjs MESSAGE.wav [NAME-SHOWN.wav]     → docs/transmit.mp4, docs/transmit.gif   (needs ffmpeg)
+//   node tools/video.mjs MESSAGE.wav [NAME-SHOWN.wav]     → docs/transmit.mp4 (with the message as sound), docs/transmit.gif   (needs ffmpeg)
 import { spawn, execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
@@ -83,6 +83,7 @@ try {
   await sleep(500);
   await click("#dlg-ok");
   await until(`st.tx`, "in onda", 100);
+  const onAirAt = Date.now() / 1000;
   console.log("in onda");
   await until(`!st.tx && document.getElementById("onair").hidden`, "fine della trasmissione", 1200);
   const err = await js(`st.error`);
@@ -99,7 +100,12 @@ try {
   fs.writeFileSync(path.join(tmp, "list.txt"), list);
   const ff = (...a) => execFileSync("ffmpeg", ["-v", "error", "-y", ...a], { cwd: tmp });
   const out = path.resolve(process.env.OUT || "docs");
-  ff("-f", "concat", "-i", "list.txt", "-vf", "fps=12,scale=944:-2:flags=lanczos", "-pix_fmt", "yuv420p", "-movflags", "+faststart", `${out}/transmit.mp4`);
+  // the sound is the message file itself, placed where it went on air (after the half second of carrier): while
+  // it transmits the HackRF cannot listen, so this is what was sent, not an off-air recording
+  const delay = Math.max(0, Math.round((onAirAt - frames[0][1] + 0.5) * 1000));
+  ff("-f", "concat", "-i", "list.txt", "-i", path.resolve(file), "-filter_complex",
+     `[0:v]fps=12,scale=944:-2:flags=lanczos[v];[1:a]adelay=${delay}:all=1,apad[a]`, "-map", "[v]", "-map", "[a]", "-shortest",
+     "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "96k", "-movflags", "+faststart", `${out}/transmit.mp4`);
   ff("-i", `${out}/transmit.mp4`, "-vf", "fps=8,scale=760:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=96[p];[b][p]paletteuse=dither=bayer:bayer_scale=4", `${out}/transmit.gif`);
   console.log(`${frames.length} fotogrammi → ${out}/transmit.mp4, ${out}/transmit.gif`);
   ok = true;

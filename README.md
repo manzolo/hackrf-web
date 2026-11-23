@@ -7,6 +7,8 @@ Made by **IU5VMO** for his own bench and for fellow radio amateurs: take it, use
 
 ![A real transmission: listen first, load the message, confirm, on air](docs/transmit.gif)
 
+🔊 [The same video with sound](docs/transmit.mp4) — the message that went on air.
+
 > Unofficial hobby project, not affiliated with Great Scott Gadgets. As-is, no support.
 > **Transmitting needs an amateur radio licence** and is your responsibility; it is off until you turn it on.
 
@@ -21,7 +23,8 @@ Made by **IU5VMO** for his own bench and for fellow radio amateurs: take it, use
 |---|---|
 | ![Listening on 2 m](docs/listen.png) | ![The confirmation dialog](docs/confirm.png) |
 
-The interface is in Italian; code and docs are in English.
+The interface speaks **Italian and English** (switch at the top right; Italian by default — the pictures here are
+in Italian). Messages coming from the server are in Italian.
 
 ## Quick start
 

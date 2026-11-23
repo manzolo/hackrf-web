@@ -35,6 +35,7 @@ try {
   await cdp("Emulation.setDeviceMetricsOverride", { width: 1180, height: 1190, deviceScaleFactor: 1, mobile: false });
   await cdp("Page.navigate", { url: URL }); await cdp("Page.bringToFront");
   await until(`typeof st !== "undefined" && !!st && document.querySelectorAll(".band").length === 5`, "pagina");
+  if (process.env.UI_LANG) await js(`applyLang(${JSON.stringify(process.env.UI_LANG)})`);     // UI_LANG=en for English
   const band = process.env.BAND || "2m";              // BAND=fm DEMO_URL=http://127.0.0.1:8073 for a real HackRF
   await js(`document.querySelector('.band[data-id="${band}"]').click()`);
   await until(`st.rx && bandOf(st.freq)?.id === "${band}" && document.getElementById("rssi").textContent.startsWith("-")`, "ascolto");

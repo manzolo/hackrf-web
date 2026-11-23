@@ -170,3 +170,4 @@ dialog h2 { margin: 0; font-size: 20px; } dialog p { margin: 2px 0 0; font-size:
 .dlg-checks input { width: 20px; height: 20px; accent-color: var(--green); flex: none; padding: 0; }
 .dlg-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
 .dlg-actions .danger { min-width: 190px; }
+.seg.lang { margin-right: 6px; } .seg.lang button { padding: 3px 9px; font-size: 11px; }

@@ -13,6 +13,7 @@
     <h1>HackRF <span>Web</span></h1>
   </div>
   <div class="leds">
+    <div id="lang" class="seg lang" title="IT / EN"><button data-v="it" class="on">IT</button><button data-v="en">EN</button></div>
     <span id="pill-rx" class="led">RX</span>
     <span id="pill-tx" class="led tx">TX</span>
     <span id="pill-rec" class="led rec">REC</span>
@@ -86,7 +87,7 @@
 
 <!-- ============================================================ TRASMISSIONE -->
 <section id="tab-tx" class="tab">
-  <div id="tx-off" class="error" hidden>La trasmissione è <b>disabilitata</b>. Per abilitarla: <code>TX_ENABLE=1</code>
+  <div id="tx-off" class="error" data-i18n-html="tx-off" hidden>La trasmissione è <b>disabilitata</b>. Per abilitarla: <code>TX_ENABLE=1</code>
     nel file <code>.env</code> accanto a <code>compose.yaml</code>, poi <code>make up</code>.</div>
 
   <div class="label">1 · Banda</div>
@@ -108,7 +109,7 @@
   <div class="label">3 · Messaggio</div>
   <label id="drop" class="drop">
     <input id="tx-file" type="file" accept="audio/*,.wav,.mp3,.ogg,.flac" hidden>
-    <div id="drop-empty">
+    <div id="drop-empty" data-i18n-html="drop-empty">
       <div class="drop-icon">🎙️</div>
       <b>Trascina qui un file audio</b> oppure clicca per sceglierlo
       <div class="dim">wav, mp3, ogg, flac · massimo <span id="tx-max">7</span> minuti</div>
@@ -140,7 +141,7 @@
     <div class="onair-bar"><i id="onair-fill"></i></div><span id="onair-time" class="mono"></span>
   </div>
 
-  <details class="warn">
+  <details class="warn" data-i18n-html="warn">
     <summary><b>Prima di trasmettere</b> · licenza, band plan, potenza</summary>
     Trasmettere richiede una licenza da radioamatore valida nel tuo Paese (in Italia: patente <i>e</i> autorizzazione
     generale con nominativo) e il rispetto del band plan: il programma controlla solo che la frequenza stia nelle bande
@@ -152,7 +153,7 @@
 
 <!-- ============================================================ REGISTRAZIONI -->
 <section id="tab-rec" class="tab">
-  <div class="controls"><button id="rec-refresh">↻ Aggiorna</button><span class="dim">Le registrazioni stanno nella cartella <code>recordings/</code>.</span></div>
+  <div class="controls"><button id="rec-refresh">↻ Aggiorna</button><span class="dim" data-i18n-html="rec-where">Le registrazioni stanno nella cartella <code>recordings/</code>.</span></div>
   <ul id="rec-list" class="rec-list"></ul>
 </section>
 </main>
@@ -167,9 +168,9 @@
       <div><dt>Tono</dt><dd id="dlg-tone"></dd></div>
     </dl>
     <div class="dlg-checks">
-      <label><input type="checkbox" class="dlg-check"><span>Ho l'<b>autorizzazione</b> a trasmettere su questa frequenza</span></label>
-      <label><input type="checkbox" class="dlg-check"><span>Il mio <b>nominativo</b> è nel messaggio</span></label>
-      <label><input type="checkbox" class="dlg-check"><span>Ho ascoltato: la frequenza è <b>libera</b></span></label>
+      <label><input type="checkbox" class="dlg-check"><span data-i18n-html="chk1">Ho l'<b>autorizzazione</b> a trasmettere su questa frequenza</span></label>
+      <label><input type="checkbox" class="dlg-check"><span data-i18n-html="chk2">Il mio <b>nominativo</b> è nel messaggio</span></label>
+      <label><input type="checkbox" class="dlg-check"><span data-i18n-html="chk3">Ho ascoltato: la frequenza è <b>libera</b></span></label>
     </div>
     <div class="dlg-actions">
       <button type="button" id="dlg-cancel" class="big">Annulla</button>
@@ -177,6 +178,7 @@
     </div>
   </form>
 </dialog>
+<script src="i18n.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

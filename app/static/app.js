@@ -59,26 +59,26 @@ function applyStatus(s) {
   st = s;
   const band = bandOf(s.freq);
   $("freq").textContent = mhz(s.freq, 4);
-  $("band-name").textContent = band ? band.name : "Frequenza libera";
+  $("band-name").textContent = T(band ? band.name : "Frequenza libera");
   $("mode-badge").textContent = s.mode.toUpperCase();
-  $("band-hint").textContent = band ? band.hint : "Fuori dalle bande in elenco: lo slider copre ±1,1 MHz attorno alla frequenza.";
+  $("band-hint").textContent = T(band ? band.hint : "Fuori dalle bande in elenco: lo slider copre ±1,1 MHz attorno alla frequenza.");
   document.querySelectorAll(".band").forEach((b) => b.classList.toggle("on", !!band && b.dataset.id === band.id));
   const ch = $("channels");
-  if (ch.dataset.band !== (band ? band.id : "")) {
-    ch.dataset.band = band ? band.id : ""; ch.innerHTML = "";
+  if (ch.dataset.band !== (band ? band.id : "") + lang) {
+    ch.dataset.band = (band ? band.id : "") + lang; ch.innerHTML = "";
     for (const [f, label] of (band ? band.ch : [])) {
       const b = document.createElement("button"); b.className = "chan";
-      b.innerHTML = `${f.toFixed(f * 1000 % 1 ? 5 : 3)}<i>${label}</i>`;
+      b.innerHTML = `${f.toFixed(f * 1000 % 1 ? 5 : 3)}<i>${T(label)}</i>`;
       b.onclick = () => goTo(f * 1e6, band.mode); ch.append(b);
     }
   }
   $("pill-rx").classList.toggle("on", s.rx);
   $("pill-tx").classList.toggle("on", s.tx);
   $("pill-rec").classList.toggle("on", !!s.recording);
-  $("rx-toggle").textContent = s.rx ? "■ Ferma" : "▶ Ascolta";
+  $("rx-toggle").textContent = T(s.rx ? "■ Ferma" : "▶ Ascolta");
   $("rx-toggle").classList.toggle("primary", !s.rx);
   $("rec-toggle").classList.toggle("rec-on", !!s.recording);
-  $("rec-toggle").textContent = s.recording ? "■ Ferma reg." : "● Registra";
+  $("rec-toggle").textContent = T(s.recording ? "■ Ferma reg." : "● Registra");
   $("rec-time").textContent = s.recording ? `● ${fmtTime(s.rec_seconds)}  ${s.recording}` : "";
   segSet("mode", s.mode);
   if (first) segSet("step", band ? band.step : 12500);
@@ -96,7 +96,7 @@ function applyStatus(s) {
   $("tx-bands").textContent = s.tx_bands.map(([a, b]) => `${a}–${b}`).join(", ") + " MHz";
   $("tx-level").max = s.tx_max_level;
   if ($("tx-tone").options.length === 1) for (const t of s.ctcss) $("tx-tone").add(new Option(`${t.toFixed(1)} Hz`, t));
-  if (!$("tx-bandcards").children.length) buildTxBands();
+  if ($("tx-bandcards").dataset.lang !== lang) { $("tx-bandcards").dataset.lang = lang; buildTxBands(); }
   updateTxFreq();
 }
 
@@ -227,13 +227,17 @@ async function unlockAudio() {
 }
 async function startRx() { await unlockAudio(); if (st && !st.rx) applyStatus(await api("/api/rx/start")); }
 
-for (const b of BANDS) {
+function buildBands() {
+ $("bands").innerHTML = "";
+ for (const b of BANDS) {
   const el = document.createElement("button");
   el.className = "band" + (b.ham ? " ham" : ""); el.dataset.id = b.id;
-  el.innerHTML = `<span class="ico">${b.ico}</span><b>${b.name}</b><small>${b.lo}–${b.hi} MHz · ${b.mode.toUpperCase()}</small>`;
+  el.innerHTML = `<span class="ico">${b.ico}</span><b>${T(b.name)}</b><small>${b.lo}–${b.hi} MHz · ${b.mode.toUpperCase()}</small>`;
   el.onclick = async () => { await goTo(b.start * 1e6, b.mode); startRx().catch(() => {}); };   // one click: tuned and listening
   $("bands").append(el);
+ }
 }
+buildBands();
 $("rx-toggle").onclick = async () => {
   await unlockAudio();
   applyStatus(await api(st && st.rx ? "/api/rx/stop" : "/api/rx/start"));
@@ -251,7 +255,8 @@ $("go").onclick = () => { const v = Number($("freq-in").value); if (v > 0) goTo(
 $("freq-in").onkeydown = (e) => { if (e.key === "Enter") $("go").click(); };
 segInit("mode", (v) => api("/api/rx/settings", { mode: v }).then(applyStatus).catch(() => {}));
 segInit("step", () => st && applyStatus(st));
-$("squelch").oninput = (e) => { const v = Number(e.target.value); $("sq-out").textContent = v <= -100 ? "aperto" : `${v} dBFS`; };
+const showSquelch = () => { const v = Number($("squelch").value); $("sq-out").textContent = v <= -100 ? T("aperto") : `${v} dBFS`; };
+$("squelch").oninput = showSquelch;
 $("squelch").onchange = (e) => { const v = Number(e.target.value); api("/api/rx/settings", { squelch: v <= -100 ? -200 : v }).then(applyStatus).catch(() => {}); };
 $("volume").oninput = (e) => { $("vol-out").textContent = `${e.target.value}%`; };
 for (let v = 0; v <= 40; v += 8) $("lna").add(new Option(`LNA ${v} dB`, v));
@@ -283,11 +288,12 @@ document.querySelectorAll(".tabs button").forEach((b) => b.onclick = () => showT
 // ---------------------------------------------------------------- transmit
 const TX_NAMES = { 144: ["2 metri", 145.45], 430: ["70 cm", 433.45], 50: ["6 metri", 51.5], 28: ["10 metri", 29.6], 1240: ["23 cm", 1297.5] };
 function buildTxBands() {
+  $("tx-bandcards").innerHTML = "";
   st.tx_bands.forEach(([lo, hi], i) => {
     const [name, def] = TX_NAMES[Math.floor(lo)] || [`${lo}–${hi}`, null];
     const [a, b] = st.tx_ranges[i];
     const el = document.createElement("button"); el.className = "bandcard"; el.dataset.i = i;
-    el.innerHTML = `<span class="big">${name}</span><small>${lo}–${hi} MHz</small><small>trasmissibile ${a.toFixed(3)}–${b.toFixed(3)}</small>`;
+    el.innerHTML = `<span class="big">${T(name)}</span><small>${lo}–${hi} MHz</small><small>${T("trasmissibile")} ${a.toFixed(3)}–${b.toFixed(3)}</small>`;
     el.onclick = () => { $("tx-freq").value = (def && def >= a && def <= b ? def : (a + b) / 2).toFixed(4); updateTxFreq(); };
     $("tx-bandcards").append(el);
   });
@@ -301,14 +307,14 @@ function updateTxFreq() {
   const v = $("tx-valid");
   if (i < 0) {
     $("tx-zone").style.width = "0"; $("tx-mark").style.left = "-10px"; $("tx-lo").textContent = $("tx-hi").textContent = "";
-    v.textContent = "✗ fuori dalle bande in cui si può trasmettere"; v.className = "no"; return false;
+    v.textContent = T("✗ fuori dalle bande in cui si può trasmettere"); v.className = "no"; return false;
   }
   const [lo, hi] = st.tx_bands[i], [a, b] = st.tx_ranges[i], pc = (x) => `${(x - lo) / (hi - lo) * 100}%`;
   $("tx-zone").style.left = pc(a); $("tx-zone").style.width = `${(b - a) / (hi - lo) * 100}%`;
   $("tx-mark").style.left = pc(f);
   $("tx-lo").textContent = lo.toFixed(3); $("tx-hi").textContent = hi.toFixed(3);
   const ok = f >= a && f <= b;
-  v.textContent = ok ? "✓ si può trasmettere qui" : `✗ troppo vicino al bordo: da ${a.toFixed(3)} a ${b.toFixed(3)}`;
+  v.textContent = ok ? T("✓ si può trasmettere qui") : T("✗ troppo vicino al bordo: da {a} a {b}", { a: a.toFixed(3), b: b.toFixed(3) });
   v.className = ok ? "ok" : "no";
   return ok;
 }
@@ -336,7 +342,7 @@ function setFile(file) {
   a.onloadedmetadata = () => {
     txDuration = a.duration;
     const long = st && txDuration > st.tx_max_seconds;
-    $("file-meta").textContent = `${fmtTime(txDuration)} · ${(txFile.size / 1e6).toFixed(1)} MB` + (long ? " · troppo lungo!" : "");
+    $("file-meta").textContent = `${fmtTime(txDuration)} · ${(txFile.size / 1e6).toFixed(1)} MB` + (long ? T(" · troppo lungo!") : "");
     $("file-meta").style.color = long ? "var(--red)" : "";
   };
 }
@@ -353,16 +359,16 @@ const dlg = $("tx-dialog"), checks = [...document.querySelectorAll(".dlg-check")
 checks.forEach((c) => c.onchange = () => { $("dlg-ok").disabled = !checks.every((x) => x.checked); });
 $("dlg-cancel").onclick = () => dlg.close();
 $("tx-go").onclick = () => {
-  if (!txFile) { showError("scegli un file audio"); return; }
-  if (!updateTxFreq()) { showError("la frequenza non è fra quelle trasmissibili"); return; }
-  if (st && txDuration > st.tx_max_seconds) { showError(`il file dura più di ${Math.round(st.tx_max_seconds / 60)} minuti`); return; }
+  if (!txFile) { showError(T("scegli un file audio")); return; }
+  if (!updateTxFreq()) { showError(T("la frequenza non è fra quelle trasmissibili")); return; }
+  if (st && txDuration > st.tx_max_seconds) { showError(T("il file dura più di {n} minuti", { n: Math.round(st.tx_max_seconds / 60) })); return; }
   showError("");
   const rep = Number(segGet("tx-repeat")), tone = Number($("tx-tone").value);
   $("dlg-freq").textContent = txF().toFixed(4);
   $("dlg-file").textContent = txFile.name; $("dlg-file").title = txFile.name;
-  $("dlg-dur").textContent = (txDuration ? fmtTime(txDuration) : "?") + (rep > 1 ? ` × ${rep} volte` : "");
-  $("dlg-level").textContent = `${$("tx-level").value} su ${$("tx-level").max}`;
-  $("dlg-tone").textContent = tone ? `${tone.toFixed(1)} Hz` : "nessuno";
+  $("dlg-dur").textContent = (txDuration ? fmtTime(txDuration) : "?") + (rep > 1 ? " × " + T("{n} volte", { n: rep }) : "");
+  $("dlg-level").textContent = T("{a} su {b}", { a: $("tx-level").value, b: $("tx-level").max });
+  $("dlg-tone").textContent = tone ? `${tone.toFixed(1)} Hz` : T("nessuno");
   checks.forEach((c) => { c.checked = false; }); $("dlg-ok").disabled = true;
   dlg.showModal();
 };
@@ -372,7 +378,7 @@ $("dlg-ok").onclick = async () => {
   const fd = new FormData();
   fd.append("file", txFile); fd.append("freq_mhz", f); fd.append("level", $("tx-level").value);
   fd.append("tone", $("tx-tone").value); fd.append("repeat", rep); fd.append("confirm", "TRASMETTI");
-  $("tx-msg").textContent = "preparo…";
+  $("tx-msg").textContent = T("preparo…");
   const r = await send("/api/tx", { body: fd });
   const j = await r.json().catch(() => ({}));
   $("tx-msg").textContent = "";
@@ -392,7 +398,7 @@ function onAir(what, total) {
     $("onair-time").textContent = `${fmtTime(Math.min(el, total))} / ${fmtTime(total)}`;
     if ((seen && st && !st.tx) || el > total + 20) {
       clearInterval(onAirTimer); $("onair").hidden = true;
-      $("tx-msg").textContent = st && st.error ? "" : "fatto ✓";
+      $("tx-msg").textContent = st && st.error ? "" : T("fatto ✓");
     }
   }, 250);
 }
@@ -402,27 +408,37 @@ $("tx-stop").onclick = () => api("/api/tx/stop").then(applyStatus).catch(() => {
 async function loadRecordings() {
   const list = await (await fetch("/api/recordings")).json();
   const ul = $("rec-list"); ul.innerHTML = "";
-  if (!list.length) { ul.innerHTML = "<li class='dim'>Nessuna registrazione: premi ● Registra mentre ascolti.</li>"; return; }
+  if (!list.length) { ul.innerHTML = `<li class='dim'>${T("Nessuna registrazione: premi ● Registra mentre ascolti.")}</li>`; return; }
   for (const r of list) {
     const li = document.createElement("li");
     const url = `/api/recordings/${encodeURIComponent(r.name)}`;
     const name = document.createElement("span"); name.className = "name";
-    name.textContent = `${r.name} (${(r.bytes / 1e6).toFixed(1)} MB)${r.active ? " · in corso" : ""}`;
+    name.textContent = `${r.name} (${(r.bytes / 1e6).toFixed(1)} MB)${r.active ? T(" · in corso") : ""}`;
     li.append(name);
     if (r.name.endsWith(".wav") && !r.active) { const a = document.createElement("audio"); a.controls = true; a.preload = "none"; a.src = url; li.append(a); }
-    const dl = document.createElement("a"); dl.href = url; dl.textContent = "scarica"; dl.download = r.name; li.append(dl);
+    const dl = document.createElement("a"); dl.href = url; dl.textContent = T("scarica"); dl.download = r.name; li.append(dl);
     if (r.name.endsWith(".wav") && !r.active) {
-      const use = document.createElement("button"); use.textContent = "📡 usa in trasmissione";
+      const use = document.createElement("button"); use.textContent = T("📡 usa in trasmissione");
       use.onclick = async () => { const b = await (await fetch(url)).blob(); setFile(new File([b], r.name, { type: "audio/wav" })); showTab("tx"); };
       li.append(use);
     }
-    const del = document.createElement("button"); del.textContent = "elimina"; del.disabled = r.active;
-    del.onclick = async () => { if (confirm(`Elimino ${r.name}?`)) { const d = await send(url, { method: "DELETE" }); if (!d.ok) showError((await d.json().catch(() => ({}))).detail); loadRecordings(); } };
+    const del = document.createElement("button"); del.textContent = T("elimina"); del.disabled = r.active;
+    del.onclick = async () => { if (confirm(T("Elimino {name}?", { name: r.name }))) { const d = await send(url, { method: "DELETE" }); if (!d.ok) showError((await d.json().catch(() => ({}))).detail); loadRecordings(); } };
     li.append(del);
     ul.append(li);
   }
 }
 $("rec-refresh").onclick = loadRecordings;
 
+// language: Italian unless the visitor chose English (remembered in the browser)
+i18nScan();
+function applyLang(l) {
+  setLang(l); segSet("lang", lang);
+  buildBands(); showSquelch();
+  if (st) applyStatus(st);
+  if ($("tab-rec").classList.contains("active")) loadRecordings();
+}
+segInit("lang", applyLang);
+applyLang(lang);
 if (["rx", "tx", "rec"].includes(location.hash.slice(1))) showTab(location.hash.slice(1));
 connect();

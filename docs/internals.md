@@ -21,11 +21,13 @@ upload ─▶ ffmpeg (48 kHz mono) ─▶ dsp.modulate_fm ──int8 IQ on stdin
   transmission with cancellation.
 - `app/server.py`: FastAPI routes, the request guard, the websocket with a bounded per-browser buffer (half a
   second of audio, latest spectrum, latest status).
-- `app/static/`: the page, plain JavaScript and canvas, no external assets.
+- `app/static/`: the page, plain JavaScript and canvas, no external assets; `i18n.js` holds the English
+  dictionary, keyed by the Italian text of the page.
 - `fake/hackrf_transfer`: the stand-in used by the tests and by the demo instance.
 - `tools/screenshots.mjs`, `tools/video.mjs`: retake the pictures and the video of the README (Chrome headless
   through the DevTools protocol). The pictures come from a demo instance on the fake HackRF; the video is a real
-  transmission.
+  transmission, and its sound is the message file placed where it went on air (a HackRF cannot listen to itself
+  while it transmits).
 
 ## Tests
 
