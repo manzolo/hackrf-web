@@ -3,7 +3,7 @@
 //   docker run -d --rm --name hackrf-web-demo -p 127.0.0.1:8074:8073 -e HACKRF_TRANSFER=/srv/fake/hackrf_transfer \
 //     -e TX_ENABLE=1 -e ALLOWED_HOSTS=127.0.0.1:8074 -e RECORDINGS_DIR=/tmp/rec hackrf-web:test \
 //     uvicorn app.server:app --host 0.0.0.0 --port 8073
-//   node tools/screenshots.mjs        → docs/listen.png, docs/transmit.png, docs/confirm.png
+//   node tools/screenshots.mjs        → docs/listen.png, docs/transmit.png, docs/confirm.png, docs/guide.png
 import { spawn } from "node:child_process";
 const URL = process.env.DEMO_URL || "http://127.0.0.1:8074", PORT = 9333;
 const chrome = spawn(process.env.CHROME || "google-chrome", ["--headless=new", `--remote-debugging-port=${PORT}`,
@@ -53,5 +53,7 @@ try {
   await js(`document.getElementById("tx-go").click(); document.querySelectorAll(".dlg-check").forEach((c, i) => { if (i < 2) c.click(); }); 1`);
   await shot("docs/confirm.png", 880);
   await js(`document.getElementById("dlg-cancel").click()`);
+  await js(`showTab("guide"); window.scrollTo(0, 0); 1`);
+  await shot("docs/guide.png", 1500);
   ws.close();
 } finally { chrome.kill(); }

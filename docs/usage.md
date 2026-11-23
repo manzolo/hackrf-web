@@ -19,6 +19,13 @@
 
 The first click also unlocks audio in the browser.
 
+## The guide
+
+The «Guida» tab is a short introduction for newcomers and listeners, in Italian and English: who radio amateurs
+are, how to become one (the Italian path), the rules before transmitting, how to talk (Q codes, signal reports,
+phonetic alphabet), repeaters, modes, safety, and the band plans of 2 m and 70 cm as tables built from the same
+data as the coloured strip. It is an introduction, not a rule book: your national rules and licence come first.
+
 ## Recordings
 
 «● Registra» saves what you hear as WAV (48 kHz mono) and, if you tick the box, the raw IQ stream too (int8

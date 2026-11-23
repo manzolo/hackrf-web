@@ -448,6 +448,14 @@ async function loadRecordings() {
 }
 $("rec-refresh").onclick = loadRecordings;
 
+// the guide: both languages are in the page (one is hidden); tables and alphabet are built from data
+const PHONETIC = "Alfa Bravo Charlie Delta Echo Foxtrot Golf Hotel India Juliett Kilo Lima Mike November Oscar Papa Quebec Romeo Sierra Tango Uniform Victor Whiskey X-ray Yankee Zulu".split(" ");
+for (const el of document.querySelectorAll(".plan-table")) {
+  const en = el.closest("[data-lang]").dataset.lang === "en";
+  planTable(el, el.dataset.plan, (x) => en && x in EN ? EN[x] : x);
+}
+for (const el of document.querySelectorAll(".phonetic")) el.innerHTML = PHONETIC.map((w) => `<span><b>${w[0]}</b>${w.slice(1)}</span>`).join("");
+
 // language: Italian unless the visitor chose English (remembered in the browser)
 i18nScan();
 function applyLang(l) {
@@ -458,5 +466,5 @@ function applyLang(l) {
 }
 segInit("lang", applyLang);
 applyLang(lang);
-if (["rx", "tx", "rec"].includes(location.hash.slice(1))) showTab(location.hash.slice(1));
+if (["rx", "tx", "rec", "guide"].includes(location.hash.slice(1))) showTab(location.hash.slice(1));
 connect();

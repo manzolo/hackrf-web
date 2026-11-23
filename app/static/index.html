@@ -26,6 +26,7 @@
   <button data-tab="rx" class="active">🎧 Ascolto</button>
   <button data-tab="tx">📡 Trasmissione</button>
   <button data-tab="rec">💾 Registrazioni</button>
+  <button data-tab="guide">📖 Guida</button>
 </nav>
 
 <main>
@@ -159,6 +160,186 @@
 <section id="tab-rec" class="tab">
   <div class="controls"><button id="rec-refresh">↻ Aggiorna</button><span class="dim" data-i18n-html="rec-where">Le registrazioni stanno nella cartella <code>recordings/</code>.</span></div>
   <ul id="rec-list" class="rec-list"></ul>
+</section>
+<!-- ============================================================ GUIDA -->
+<section id="tab-guide" class="tab">
+<div data-lang="it" class="guide">
+  <p class="guide-intro">Una guida breve per chi comincia, o per chi ascolta e vuole capire cosa sente. È divulgazione:
+  le regole vere sono quelle del tuo Paese e della tua licenza.</p>
+
+  <article><h3>📻 Chi sono i radioamatori</h3>
+    <p>Persone autorizzate a usare la radio <b>per passione</b>: per imparare, sperimentare, parlarsi a distanza e dare una mano
+    nelle emergenze. Mai per lavoro o per guadagno. Ogni stazione ha un <b>nominativo</b> unico al mondo
+    (in Italia comincia per I: per esempio <span class="mono">IU5VMO</span>, dove 5 è la Toscana).</p>
+    <p><b>Ascoltare</b> le bande dei radioamatori è libero. Per <b>trasmettere</b> serve la licenza.</p></article>
+
+  <article><h3>🎓 Come si diventa radioamatore (in Italia)</h3>
+    <ol><li>Si studia: elettrotecnica e radiotecnica di base, norme, procedure operative.</li>
+    <li>Si supera l'<b>esame</b> all'Ispettorato territoriale del Ministero (MIMIT) e si riceve la <b>patente di operatore</b>
+    (valida in tutta Europa: certificato HAREC).</li>
+    <li>Si chiede l'<b>autorizzazione generale</b>, che dura dieci anni, e con quella arriva il <b>nominativo</b>.</li></ol>
+    <p>Le sezioni <a href="https://www.ari.it" target="_blank" rel="noopener">ARI</a> e le altre associazioni organizzano corsi e aiutano chi comincia.</p></article>
+
+  <article class="wide"><h3>✅ Le regole d'oro prima di premere il tasto</h3>
+    <ul class="rules">
+      <li><b>Ascolta prima.</b> Se la frequenza è occupata, aspetta o spostati. Chiedere «è libera la frequenza?» è buona educazione.</li>
+      <li><b>Dì chi sei.</b> Il nominativo all'inizio, alla fine e a intervalli brevi durante il collegamento. Una trasmissione senza nominativo è irregolare.</li>
+      <li><b>Solo fra radioamatori.</b> Si parla con altre stazioni di radioamatore, non al pubblico: niente trasmissioni «in stile radio».</li>
+      <li><b>Niente musica, pubblicità o affari.</b> E niente messaggi per conto di altri a pagamento.</li>
+      <li><b>In chiaro.</b> Niente codici segreti o cifratura: chiunque deve poter capire cosa si trasmette.</li>
+      <li><b>La potenza minima che basta.</b> Se ti sentono con 5 watt, non usarne 50.</li>
+      <li><b>Rispetta il band plan.</b> Ogni pezzo di banda ha il suo uso: non si fa fonia FM dove si ascoltano i beacon o i satelliti.</li>
+      <li><b>Non disturbare.</b> Né gli altri radioamatori né gli altri servizi. Se qualcuno segnala un disturbo, si smette e si controlla.</li>
+      <li><b>L'emergenza ha la precedenza.</b> Se senti una richiesta di soccorso, lascia libera la frequenza e, se puoi, aiuta.</li>
+      <li><b>Cortesia.</b> Passaggi brevi, una pausa fra un passaggio e l'altro, parole pulite. Sulla radio ti sentono tutti.</li>
+    </ul>
+    <p class="dim">Per questa pagina vuol dire: il file che trasmetti deve contenere il tuo nominativo, non può essere musica, e la frequenza va ascoltata prima.</p></article>
+
+  <article><h3>🗣️ Come si parla</h3>
+    <p>Una chiamata in fonia: <i>«CQ CQ CQ da India Uniform Five Victor Mike Oscar, IU5VMO chiama e ascolta»</i>.
+    Per rispondere a qualcuno: prima il suo nominativo, poi il tuo.</p>
+    <table class="q"><tbody>
+      <tr><td class="mono">CQ</td><td>chiamata generale: «c'è qualcuno?»</td></tr>
+      <tr><td class="mono">QSO</td><td>il collegamento</td></tr>
+      <tr><td class="mono">QTH</td><td>il luogo da cui trasmetti</td></tr>
+      <tr><td class="mono">QRZ?</td><td>«chi mi chiama?»</td></tr>
+      <tr><td class="mono">QSY</td><td>cambio di frequenza</td></tr>
+      <tr><td class="mono">QRM / QRN</td><td>disturbi da altre stazioni / rumore naturale</td></tr>
+      <tr><td class="mono">QRP</td><td>bassa potenza</td></tr>
+      <tr><td class="mono">QSL</td><td>«ricevuto»; anche la cartolina di conferma</td></tr>
+      <tr><td class="mono">73</td><td>cordiali saluti</td></tr>
+    </tbody></table>
+    <p>Il <b>rapporto</b> si dà con due numeri: comprensibilità da 1 a 5 e intensità da 1 a 9. «Cinque nove» vuol dire: ti capisco benissimo e arrivi forte.</p></article>
+
+  <article><h3>🔤 L'alfabeto fonetico</h3>
+    <p>Per dettare nominativi e parole senza equivoci, uguale in tutto il mondo:</p>
+    <div class="phonetic"></div></article>
+
+  <article><h3>🗼 I ponti ripetitori</h3>
+    <p>Un ponte sta in alto, ascolta su una frequenza (<b>ingresso</b>) e ritrasmette su un'altra (<b>uscita</b>): due stazioni che non si
+    sentono direttamente si parlano attraverso di lui.</p>
+    <ul><li><b>Shift</b>: la distanza fra uscita e ingresso. In 2 metri −600 kHz; in 70 cm dipende dal ponte.</li>
+    <li><b>Tono CTCSS</b>: una nota bassa, che non si sente, aggiunta alla voce: molti ponti si aprono solo con il tono giusto.</li>
+    <li><b>Come si usa</b>: ascolta, dì il tuo nominativo, fai passaggi brevi e lascia qualche secondo di pausa perché altri possano inserirsi.</li>
+    <li>Se due stazioni si sentono anche senza ponte, è cortesia passare in <b>diretta</b> e lasciarlo libero.</li></ul></article>
+
+  <article><h3>🎚️ I modi di emissione</h3>
+    <ul><li><b>FM</b>: fonia chiara e semplice, ponti e collegamenti locali. È quella che questa pagina riceve e trasmette.</li>
+    <li><b>SSB</b>: fonia a banda stretta, va più lontano con meno potenza: è il modo del DX.</li>
+    <li><b>CW</b>: la telegrafia in codice Morse, il modo più antico e più efficiente.</li>
+    <li><b>Digitale</b>: APRS (posizioni e brevi messaggi), FT8, packet, fonia digitale (DMR, D-STAR, C4FM).</li>
+    <li><b>AM</b>: i radioamatori la usano poco; è il modo della banda aeronautica.</li></ul></article>
+
+  <article class="wide"><h3>🗺️ Band plan dei 2 metri (144–146 MHz)</h3>
+    <div class="plan-table" data-plan="2m"></div></article>
+  <article class="wide"><h3>🗺️ Band plan dei 70 centimetri (430–440 MHz)</h3>
+    <div class="plan-table" data-plan="70cm"></div>
+    <p class="dim">Piano IARU Regione 1 (Europa, Africa, Medio Oriente), semplificato. La colonna «Fonia FM» dice dove ha senso
+    trasmettere in FM. I piani nazionali hanno differenze: in Italia la banda dei 70 cm è 430–434 MHz, più 435–438 MHz per i satelliti.
+    La fonte è l'<a href="https://www.iaru-r1.org/on-the-air/band-plans/" target="_blank" rel="noopener">IARU Regione 1</a>.</p></article>
+
+  <article><h3>⚠️ Sicurezza</h3>
+    <ul><li><b>L'ingresso dell'HackRF</b> regge pochissimo (−5 dBm): togli l'antenna se una radio trasmette vicino, e non collegarlo mai a un trasmettitore senza attenuatore.</li>
+    <li><b>Mai trasmettere senza antenna o carico</b> con una radio vera: lo stadio finale può rovinarsi.</li>
+    <li><b>L'uscita dell'HackRF non è filtrata</b>: oltre al segnale voluto emette armoniche. Va bene per prove a bassissima potenza, non per fare servizio.</li>
+    <li><b>Distanza dalle antenne</b> quando si trasmette con potenze vere: la radiofrequenza scalda.</li></ul></article>
+
+  <article><h3>🔗 Per saperne di più</h3>
+    <ul><li><a href="https://www.iaru-r1.org" target="_blank" rel="noopener">IARU Regione 1</a>: band plan e raccomandazioni</li>
+    <li><a href="https://www.ari.it" target="_blank" rel="noopener">ARI</a>, Associazione Radioamatori Italiani: sezioni, corsi, ponti</li>
+    <li><a href="https://www.mimit.gov.it" target="_blank" rel="noopener">MIMIT</a>: esami, patente e autorizzazione generale</li>
+    <li><a href="https://greatscottgadgets.com/hackrf/" target="_blank" rel="noopener">HackRF</a>: la documentazione dello strumento</li></ul>
+    <p>73 da IU5VMO!</p></article>
+</div>
+
+<div data-lang="en" class="guide">
+  <p class="guide-intro">A short guide for beginners, and for listeners who want to understand what they hear. It is an introduction:
+  the real rules are those of your country and of your licence.</p>
+
+  <article><h3>📻 Who radio amateurs are</h3>
+    <p>People licensed to use radio <b>for the love of it</b>: to learn, experiment, talk over a distance and help in
+    emergencies. Never for work or profit. Every station has a <b>callsign</b> unique in the world
+    (Italian ones begin with I: for example <span class="mono">IU5VMO</span>, where 5 is Tuscany).</p>
+    <p><b>Listening</b> to the amateur bands is free. <b>Transmitting</b> needs a licence.</p></article>
+
+  <article><h3>🎓 Becoming a radio amateur (in Italy)</h3>
+    <ol><li>You study: basic electricity and radio, regulations, operating procedures.</li>
+    <li>You pass the <b>exam</b> at the Ministry's regional office (MIMIT) and get the <b>operator certificate</b>
+    (valid across Europe: the HAREC certificate).</li>
+    <li>You apply for the <b>general authorisation</b>, valid ten years, and your <b>callsign</b> comes with it.</li></ol>
+    <p>Elsewhere the path is similar: your national society (ARRL, RSGB, DARC, <a href="https://www.ari.it" target="_blank" rel="noopener">ARI</a>…) runs courses and helps newcomers.</p></article>
+
+  <article class="wide"><h3>✅ The golden rules before you key up</h3>
+    <ul class="rules">
+      <li><b>Listen first.</b> If the frequency is in use, wait or move. Asking “is this frequency in use?” is good manners.</li>
+      <li><b>Say who you are.</b> Your callsign at the beginning, at the end and at short intervals during the contact. A transmission without a callsign is not legal.</li>
+      <li><b>Amateurs only.</b> You talk to other amateur stations, not to the public: no broadcasting.</li>
+      <li><b>No music, advertising or business.</b> And no paid messages on behalf of others.</li>
+      <li><b>In the clear.</b> No secret codes or encryption: anyone must be able to understand what is sent.</li>
+      <li><b>The least power that works.</b> If they hear you with 5 watts, do not use 50.</li>
+      <li><b>Follow the band plan.</b> Each part of a band has its use: no FM voice where people listen for beacons or satellites.</li>
+      <li><b>Do not interfere.</b> Neither with other amateurs nor with other services. If someone reports interference, stop and check.</li>
+      <li><b>Emergencies come first.</b> If you hear a distress call, keep the frequency clear and help if you can.</li>
+      <li><b>Courtesy.</b> Short transmissions, a pause between them, clean language. Everyone can hear you on the radio.</li>
+    </ul>
+    <p class="dim">For this page that means: the file you transmit must contain your callsign, it cannot be music, and you listen on the frequency first.</p></article>
+
+  <article><h3>🗣️ How to talk</h3>
+    <p>A voice call: <i>“CQ CQ CQ from India Uniform Five Victor Mike Oscar, IU5VMO calling and listening”</i>.
+    To answer someone: their callsign first, then yours.</p>
+    <table class="q"><tbody>
+      <tr><td class="mono">CQ</td><td>general call: “anyone there?”</td></tr>
+      <tr><td class="mono">QSO</td><td>the contact</td></tr>
+      <tr><td class="mono">QTH</td><td>the place you transmit from</td></tr>
+      <tr><td class="mono">QRZ?</td><td>“who is calling me?”</td></tr>
+      <tr><td class="mono">QSY</td><td>change of frequency</td></tr>
+      <tr><td class="mono">QRM / QRN</td><td>interference from other stations / natural noise</td></tr>
+      <tr><td class="mono">QRP</td><td>low power</td></tr>
+      <tr><td class="mono">QSL</td><td>“received”; also the confirmation card</td></tr>
+      <tr><td class="mono">73</td><td>best regards</td></tr>
+    </tbody></table>
+    <p>A <b>signal report</b> is two numbers: readability from 1 to 5 and strength from 1 to 9. “Five nine” means: perfectly readable and strong.</p></article>
+
+  <article><h3>🔤 The phonetic alphabet</h3>
+    <p>To spell callsigns and words without mistakes, the same all over the world:</p>
+    <div class="phonetic"></div></article>
+
+  <article><h3>🗼 Repeaters</h3>
+    <p>A repeater sits high up, listens on one frequency (<b>input</b>) and retransmits on another (<b>output</b>): two stations that cannot
+    hear each other directly talk through it.</p>
+    <ul><li><b>Shift</b>: the distance between output and input. On 2 metres −600 kHz; on 70 cm it depends on the repeater.</li>
+    <li><b>CTCSS tone</b>: a low note you cannot hear, added to the voice: many repeaters open only with the right tone.</li>
+    <li><b>How to use one</b>: listen, give your callsign, keep transmissions short and leave a few seconds between them so others can break in.</li>
+    <li>If two stations can hear each other without the repeater, it is polite to go <b>simplex</b> and leave it free.</li></ul></article>
+
+  <article><h3>🎚️ Modes</h3>
+    <ul><li><b>FM</b>: clear and simple voice, repeaters and local contacts. It is what this page receives and transmits.</li>
+    <li><b>SSB</b>: narrow-band voice, goes further with less power: the mode for DX.</li>
+    <li><b>CW</b>: Morse telegraphy, the oldest and most efficient mode.</li>
+    <li><b>Digital</b>: APRS (positions and short messages), FT8, packet, digital voice (DMR, D-STAR, C4FM).</li>
+    <li><b>AM</b>: little used by amateurs; it is the mode of the airband.</li></ul></article>
+
+  <article class="wide"><h3>🗺️ Band plan for 2 metres (144–146 MHz)</h3>
+    <div class="plan-table" data-plan="2m"></div></article>
+  <article class="wide"><h3>🗺️ Band plan for 70 centimetres (430–440 MHz)</h3>
+    <div class="plan-table" data-plan="70cm"></div>
+    <p class="dim">IARU Region 1 plan (Europe, Africa, Middle East), simplified. The “FM voice” column says where transmitting FM makes sense.
+    National plans differ: in Italy the 70 cm band is 430–434 MHz, plus 435–438 MHz for satellites. In Regions 2 and 3 the 2 m band
+    is 144–148 MHz with a different plan. The source is
+    <a href="https://www.iaru-r1.org/on-the-air/band-plans/" target="_blank" rel="noopener">IARU Region 1</a>.</p></article>
+
+  <article><h3>⚠️ Safety</h3>
+    <ul><li><b>The HackRF input</b> takes very little (−5 dBm): remove its antenna if a radio transmits nearby, and never connect it to a transmitter without an attenuator.</li>
+    <li><b>Never transmit without an antenna or a load</b> on a real radio: the final stage can be damaged.</li>
+    <li><b>The HackRF output is not filtered</b>: besides the wanted signal it emits harmonics. Fine for very low power tests, not for regular operation.</li>
+    <li><b>Keep away from antennas</b> when transmitting real power: radio frequency heats.</li></ul></article>
+
+  <article><h3>🔗 Learn more</h3>
+    <ul><li><a href="https://www.iaru-r1.org" target="_blank" rel="noopener">IARU Region 1</a>: band plans and recommendations</li>
+    <li>Your national amateur radio society: courses, exams, repeaters</li>
+    <li><a href="https://greatscottgadgets.com/hackrf/" target="_blank" rel="noopener">HackRF</a>: the documentation of the device</li></ul>
+    <p>73 from IU5VMO!</p></article>
+</div>
 </section>
 </main>
 <dialog id="tx-dialog">

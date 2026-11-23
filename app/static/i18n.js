@@ -41,6 +41,29 @@ const EN = {
   "{n} volte": "{n} times", "{a} su {b}": "{a} of {b}", "preparo…": "preparing…", "fatto ✓": "done ✓",
   "Pronto a trasmettere?": "Ready to transmit?", "Controlla e conferma: dopo va in onda.": "Check and confirm: then it goes on air.",
   "Messaggio": "Message", "Durata": "Length", "Tono": "Tone", "Annulla": "Cancel", "📡 Vai in onda": "📡 Go on air",
+  "📖 Guida": "📖 Guide", "Uso": "Use", "Fonia FM": "FM voice",
+  "tutti i modi, solo dallo spazio verso terra": "all modes, space to earth only",
+  "chiamata CW 144.050; anche modi digitali stretti e EME": "CW calling 144.050; narrow digital modes and EME too",
+  "il DX in fonia: SSB in banda laterale superiore (USB)": "voice DX: SSB on the upper sideband (USB)",
+  "radiofari per studiare la propagazione: si ascoltano soltanto": "beacons for studying propagation: listen only",
+  "SSTV attorno a 144.500, transponder lineari, esperimenti": "SSTV around 144.500, linear transponders, experiments",
+  "APRS e packet su 144.800 in tutta Europa": "APRS and packet on 144.800 all over Europe",
+  "qui trasmette chi usa un ponte: 600 kHz sotto la sua uscita": "where repeater users transmit: 600 kHz below the repeater's output",
+  "FM, collegamenti con lo spazio": "FM, contacts with space",
+  "canali ogni 12,5 kHz; su 145.500 ci si chiama e poi ci si sposta; 145.375 chiamata in fonia digitale": "channels every 12.5 kHz; call on 145.500, then move; 145.375 digital voice calling",
+  "qui si ascoltano i ponti; shift −600 kHz, spesso con tono CTCSS": "where you hear the repeaters; −600 kHz shift, often with a CTCSS tone",
+  "la Stazione Spaziale: fonia, SSTV e packet scendono su 145.800": "the Space Station: voice, SSTV and packet come down on 145.800",
+  "solo satelliti": "satellites only",
+  "in Italia i ponti FM e digitali, con shift +1,6 o +5 MHz secondo il ponte": "in Italy FM and digital repeaters, with a +1.6 or +5 MHz shift depending on the repeater",
+  "anche i collegamenti via Luna": "moonbounce too", "il DX in fonia, in USB": "voice DX, on USB",
+  "radiofari: si ascoltano soltanto": "beacons: listen only",
+  "transponder lineari, SSTV, esperimenti": "linear transponders, SSTV, experiments",
+  "ingressi dei ponti nei Paesi che usano lo shift di 1,6 MHz": "repeater inputs in the countries that use the 1.6 MHz shift",
+  "canali ogni 25 kHz (o 12,5); su 433.500 ci si chiama e poi ci si sposta": "channels every 25 kHz (or 12.5); call on 433.500, then move",
+  "attenzione: 433.05–434.79 è anche banda ISM, con telecomandi e sensori": "mind that 433.05–434.79 is also an ISM band, with remote controls and sensors",
+  "altrove: tutti i modi, ATV, uscite dei ponti": "elsewhere: all modes, ATV, repeater outputs",
+  "in Italia assegnata ai radioamatori per il servizio via satellite": "in Italy allocated to amateurs for the satellite service",
+  "altrove: ATV, ponti e link": "elsewhere: ATV, repeaters and links",
   "↻ Aggiorna": "↻ Refresh",
   "band plan IARU R1, indicativo": "IARU R1 band plan, indicative",
   "⚠ non è un segmento per la fonia FM": "⚠ not a segment for FM voice",
@@ -78,7 +101,7 @@ const I18N = { nodes: [], attrs: [], blocks: [] };
 function i18nScan() {
   for (const el of document.querySelectorAll("[data-i18n-html]")) I18N.blocks.push([el, el.dataset.i18nHtml, el.innerHTML]);
   const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-    acceptNode: (n) => n.parentElement.closest("script,[data-i18n-html]") || !n.nodeValue.trim() ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+    acceptNode: (n) => n.parentElement.closest("script,[data-i18n-html],[data-lang]") || !n.nodeValue.trim() ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
   for (let n = w.nextNode(); n; n = w.nextNode()) I18N.nodes.push([n, n.nodeValue]);
   for (const el of document.querySelectorAll("[title],[placeholder],[aria-label]"))
     for (const a of ["title", "placeholder", "aria-label"]) if (el.hasAttribute(a)) I18N.attrs.push([el, a, el.getAttribute(a)]);
