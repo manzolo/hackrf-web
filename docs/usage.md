@@ -24,7 +24,8 @@ The first click also unlocks audio in the browser.
 The «Guida» tab is a short introduction for newcomers and listeners, in Italian and English: who radio amateurs
 are, how to become one (the Italian path), the rules before transmitting, how to talk (Q codes, signal reports,
 phonetic alphabet), repeaters, modes, safety, and the band plans of 2 m and 70 cm as tables built from the same
-data as the coloured strip. It is an introduction, not a rule book: your national rules and licence come first.
+data as the coloured strip. At the bottom, a contact step by step and a phrase book of about sixty entries with a
+filter by word and by category (`app/static/guide.js`). It is an introduction, not a rule book: your national rules and licence come first.
 
 ## Recordings
 

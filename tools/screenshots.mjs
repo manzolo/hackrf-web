@@ -3,7 +3,7 @@
 //   docker run -d --rm --name hackrf-web-demo -p 127.0.0.1:8074:8073 -e HACKRF_TRANSFER=/srv/fake/hackrf_transfer \
 //     -e TX_ENABLE=1 -e ALLOWED_HOSTS=127.0.0.1:8074 -e RECORDINGS_DIR=/tmp/rec hackrf-web:test \
 //     uvicorn app.server:app --host 0.0.0.0 --port 8073
-//   node tools/screenshots.mjs        → docs/listen.png, docs/transmit.png, docs/confirm.png, docs/guide.png
+//   node tools/screenshots.mjs        → docs/listen.png, docs/transmit.png, docs/confirm.png, docs/guide.png, docs/phrasebook.png
 import { spawn } from "node:child_process";
 const URL = process.env.DEMO_URL || "http://127.0.0.1:8074", PORT = 9333;
 const chrome = spawn(process.env.CHROME || "google-chrome", ["--headless=new", `--remote-debugging-port=${PORT}`,
@@ -55,5 +55,9 @@ try {
   await js(`document.getElementById("dlg-cancel").click()`);
   await js(`showTab("guide"); window.scrollTo(0, 0); 1`);
   await shot("docs/guide.png", 1500);
+  await cdp("Emulation.setDeviceMetricsOverride", { width: 1180, height: 900, deviceScaleFactor: 1, mobile: false });
+  await sleep(300);
+  await js(`document.getElementById("gloss-q").value = "freq"; filterGlossary(); document.getElementById("gloss-q").closest("article").scrollIntoView(); 1`);
+  await shot("docs/phrasebook.png", 900);
   ws.close();
 } finally { chrome.kill(); }

@@ -209,3 +209,18 @@ html[lang="it"] [data-lang="en"], html[lang="en"] [data-lang="it"] { display: no
 .phonetic { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; font: 13px var(--mono); }
 .phonetic span { background: #0b131f; border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; }
 .phonetic b { color: var(--amber); }
+
+.guide-extra { margin-top: 14px; }
+.qso { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.qso li { display: flex; gap: 12px; align-items: flex-start; margin: 0; padding: 10px 12px; background: #0b131f; border-radius: 10px; }
+.qso .n { flex: none; width: 26px; height: 26px; border-radius: 50%; background: #12404a; color: var(--accent); font: 700 13px/26px var(--mono); text-align: center; }
+.qso .say { font-style: italic; margin-bottom: 2px; }
+.gloss-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+.gloss-bar input { flex: 1 1 240px; font-size: 16px; padding: 9px 12px; }
+.gloss-bar .seg { flex: 0 1 auto; } .gloss-bar .seg button { padding: 8px 12px; white-space: nowrap; font-family: system-ui, sans-serif; }
+.gloss { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 8px; }
+.gl { display: flex; gap: 12px; padding: 8px 12px; background: #0b131f; border: 1px solid var(--line); border-left: 3px solid var(--amber); border-radius: 8px; }
+.gl b { flex: 0 0 96px; font-family: var(--mono); color: var(--amber); word-break: break-word; }
+.gl.c-abbr { border-left-color: var(--accent); } .gl.c-abbr b { color: var(--accent); }
+.gl.c-rep { border-left-color: var(--green); } .gl.c-rep b { color: var(--green); }
+.gl.c-tech { border-left-color: #a57be0; } .gl.c-tech b { color: #c3a3f0; }

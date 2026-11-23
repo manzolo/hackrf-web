@@ -22,12 +22,13 @@ Made by **IU5VMO** for his own bench and for fellow radio amateurs: take it, use
   warning when the band plan says the segment is not for FM voice.
 
 - **Guide**: a tab for newcomers — who radio amateurs are, the golden rules before keying up, Q codes, the phonetic
-  alphabet, repeaters, modes, and the 2 m and 70 cm band plans as readable tables.
+  alphabet, repeaters, modes, the 2 m and 70 cm band plans as readable tables, a contact step by step and a
+  searchable phrase book (Q code, abbreviations, reports, radio words).
 
 | | |
 |---|---|
 | ![Listening on 2 m](docs/listen.png) | ![The confirmation dialog](docs/confirm.png) |
-| ![The guide](docs/guide.png) | ![Transmit tab](docs/transmit.png) |
+| ![The guide](docs/guide.png) | ![The phrase book, filtered](docs/phrasebook.png) |
 
 The interface speaks **Italian and English** (switch at the top right; Italian by default — the pictures here are
 in Italian). Messages coming from the server are in Italian.

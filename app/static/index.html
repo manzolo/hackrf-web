@@ -209,7 +209,8 @@
       <tr><td class="mono">QSL</td><td>«ricevuto»; anche la cartolina di conferma</td></tr>
       <tr><td class="mono">73</td><td>cordiali saluti</td></tr>
     </tbody></table>
-    <p>Il <b>rapporto</b> si dà con due numeri: comprensibilità da 1 a 5 e intensità da 1 a 9. «Cinque nove» vuol dire: ti capisco benissimo e arrivi forte.</p></article>
+    <p>Il <b>rapporto</b> si dà con due numeri: comprensibilità da 1 a 5 e intensità da 1 a 9. «Cinque nove» vuol dire: ti capisco benissimo e arrivi forte.</p>
+    <p class="dim">Più sotto: un collegamento passo per passo e il prontuario con tutte le sigle, da cercare.</p></article>
 
   <article><h3>🔤 L'alfabeto fonetico</h3>
     <p>Per dettare nominativi e parole senza equivoci, uguale in tutto il mondo:</p>
@@ -298,7 +299,8 @@
       <tr><td class="mono">QSL</td><td>“received”; also the confirmation card</td></tr>
       <tr><td class="mono">73</td><td>best regards</td></tr>
     </tbody></table>
-    <p>A <b>signal report</b> is two numbers: readability from 1 to 5 and strength from 1 to 9. “Five nine” means: perfectly readable and strong.</p></article>
+    <p>A <b>signal report</b> is two numbers: readability from 1 to 5 and strength from 1 to 9. “Five nine” means: perfectly readable and strong.</p>
+    <p class="dim">Further down: a contact step by step and the phrase book with all the codes, searchable.</p></article>
 
   <article><h3>🔤 The phonetic alphabet</h3>
     <p>To spell callsigns and words without mistakes, the same all over the world:</p>
@@ -340,6 +342,18 @@
     <li><a href="https://greatscottgadgets.com/hackrf/" target="_blank" rel="noopener">HackRF</a>: the documentation of the device</li></ul>
     <p>73 from IU5VMO!</p></article>
 </div>
+
+<div class="guide guide-extra">
+  <article class="wide"><h3>🎙️ Un collegamento, passo per passo</h3>
+    <ol id="qso-steps" class="qso"></ol></article>
+  <article class="wide"><h3>🔎 Prontuario: codice Q, sigle, rapporti, parole della radio</h3>
+    <div class="gloss-bar">
+      <input id="gloss-q" type="search" placeholder="cerca: QRM, potenza, saluti, ponte…" autocomplete="off">
+      <div id="gloss-cats" class="seg"></div>
+      <span id="gloss-n" class="mono dim"></span>
+    </div>
+    <div id="gloss-list" class="gloss"></div></article>
+</div>
 </section>
 </main>
 <dialog id="tx-dialog">
@@ -366,6 +380,7 @@
 </dialog>
 <script src="i18n.js"></script>
 <script src="bandplan.js"></script>
+<script src="guide.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

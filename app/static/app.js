@@ -456,11 +456,13 @@ for (const el of document.querySelectorAll(".plan-table")) {
 }
 for (const el of document.querySelectorAll(".phonetic")) el.innerHTML = PHONETIC.map((w) => `<span><b>${w[0]}</b>${w.slice(1)}</span>`).join("");
 
+$("gloss-q").oninput = filterGlossary;
+
 // language: Italian unless the visitor chose English (remembered in the browser)
 i18nScan();
 function applyLang(l) {
   setLang(l); segSet("lang", lang);
-  buildBands(); showSquelch();
+  buildBands(); showSquelch(); renderGuideExtra();
   if (st) applyStatus(st);
   if ($("tab-rec").classList.contains("active")) loadRecordings();
 }
