@@ -285,12 +285,15 @@ async def ws(sock: WebSocket):
     tasks = [asyncio.create_task(sender()), asyncio.create_task(receiver())]
     try:
         await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+    except asyncio.CancelledError:             # the server (or a test client) is tearing the connection down:
+        pass                                   # clean up and return, there is nothing left to cancel
     finally:
         engine.subscribers.remove(sub.push)
         for t in tasks:
             t.cancel()
-        await asyncio.gather(*tasks, return_exceptions=True)
-        with contextlib.suppress(Exception):
+        with contextlib.suppress(BaseException):
+            await asyncio.gather(*tasks, return_exceptions=True)
+        with contextlib.suppress(BaseException):
             await sock.close()
 
 

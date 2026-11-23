@@ -8,6 +8,10 @@ A small web page to **listen** with a [HackRF One](https://greatscottgadgets.com
 an audio file** on the amateur bands, in a Docker container. Python (FastAPI, NumPy, SciPy) on the server, plain
 JavaScript and canvas in the browser, no external assets.
 
+![Listening on the 2 m band: band picker, frequency dial, spectrum, waterfall and audio waveform](docs/listen.png)
+
+*The pictures come from a demo instance fed by the test suite's fake HackRF (a synthetic carrier on 145.500 MHz).*
+
 **Status: experimental, built for personal use.** Tested on Ubuntu 26.04 with a HackRF One (firmware 2024.02.1)
 and Docker 29. The user interface is in **Italian**; the code and this README are in English.
 
@@ -41,6 +45,8 @@ and Docker 29. The user interface is in **Italian**; the code and this README ar
   - every transmission must be confirmed by typing `TRASMETTI` (Italian for "transmit");
   - **Stop** cancels at any stage (decoding, between repetitions, on air: terminate, then kill);
   - while transmitting, reception pauses and resumes afterwards (the HackRF is half duplex).
+
+![Transmit tab: band, frequency with the allowed zone, audio file, tone, level, repetitions](docs/transmit.png)
 
 **Who can give commands.** The page can key a transmitter, so the server does not trust the browser's network
 position alone: the container port is published on **127.0.0.1 only**; every request must carry a `Host` header
@@ -131,6 +137,7 @@ upload ─▶ ffmpeg (48 kHz mono) ─▶ dsp.modulate_fm ──int8 IQ on stdin
 - `app/server.py`: FastAPI routes, the request guard, the websocket with a bounded per-browser buffer (half a
   second of audio, latest spectrum, latest status).
 - `app/static/`: the page.
+- `tools/screenshots.mjs`: retakes the pictures of this README from a demo instance (Chrome headless, no radio).
 
 ## Tests
 
