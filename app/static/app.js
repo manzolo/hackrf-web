@@ -97,7 +97,6 @@ function applyStatus(s) {
   $("tx-level").max = s.tx_max_level;
   if ($("tx-tone").options.length === 1) for (const t of s.ctcss) $("tx-tone").add(new Option(`${t.toFixed(1)} Hz`, t));
   if (!$("tx-bandcards").children.length) buildTxBands();
-  if (!s.tx && $("tx-msg").dataset.live) { $("tx-msg").textContent = s.error ? "" : "fatto ✓"; delete $("tx-msg").dataset.live; }
   updateTxFreq();
 }
 
@@ -349,24 +348,54 @@ const drop = $("drop");
 ["dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
 drop.addEventListener("drop", (e) => { if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]); });
 
-$("tx-go").onclick = async () => {
+// Confirmation: a dialog that shows what is about to go on air and asks for the three things that matter.
+const dlg = $("tx-dialog"), checks = [...document.querySelectorAll(".dlg-check")];
+checks.forEach((c) => c.onchange = () => { $("dlg-ok").disabled = !checks.every((x) => x.checked); });
+$("dlg-cancel").onclick = () => dlg.close();
+$("tx-go").onclick = () => {
   if (!txFile) { showError("scegli un file audio"); return; }
   if (!updateTxFreq()) { showError("la frequenza non è fra quelle trasmissibili"); return; }
+  if (st && txDuration > st.tx_max_seconds) { showError(`il file dura più di ${Math.round(st.tx_max_seconds / 60)} minuti`); return; }
+  showError("");
+  const rep = Number(segGet("tx-repeat")), tone = Number($("tx-tone").value);
+  $("dlg-freq").textContent = txF().toFixed(4);
+  $("dlg-file").textContent = txFile.name; $("dlg-file").title = txFile.name;
+  $("dlg-dur").textContent = (txDuration ? fmtTime(txDuration) : "?") + (rep > 1 ? ` × ${rep} volte` : "");
+  $("dlg-level").textContent = `${$("tx-level").value} su ${$("tx-level").max}`;
+  $("dlg-tone").textContent = tone ? `${tone.toFixed(1)} Hz` : "nessuno";
+  checks.forEach((c) => { c.checked = false; }); $("dlg-ok").disabled = true;
+  dlg.showModal();
+};
+$("dlg-ok").onclick = async () => {
+  dlg.close();
   const f = txF().toFixed(4), rep = segGet("tx-repeat");
-  const ans = prompt(`Trasmetto «${txFile.name}» su ${f} MHz, livello ${$("tx-level").value}, ${rep} volta/e.\n` +
-                     "Hai l'autorizzazione per questa frequenza? Il nominativo è nel messaggio? La frequenza è libera?\n" +
-                     "Per confermare scrivi TRASMETTI:");
-  if (ans === null) return;
   const fd = new FormData();
   fd.append("file", txFile); fd.append("freq_mhz", f); fd.append("level", $("tx-level").value);
-  fd.append("tone", $("tx-tone").value); fd.append("repeat", rep); fd.append("confirm", ans.trim());
+  fd.append("tone", $("tx-tone").value); fd.append("repeat", rep); fd.append("confirm", "TRASMETTI");
   $("tx-msg").textContent = "preparo…";
   const r = await send("/api/tx", { body: fd });
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) { showError(j.detail || r.statusText); $("tx-msg").textContent = ""; return; }
-  showError("");
-  $("tx-msg").textContent = `in onda: ${fmtTime(j.seconds)} × ${j.repeat}`; $("tx-msg").dataset.live = "1";
+  $("tx-msg").textContent = "";
+  if (!r.ok) { showError(j.detail || r.statusText); return; }
+  onAir(`${f} MHz`, j.seconds * j.repeat + 2 * (j.repeat - 1));
 };
+let onAirTimer = null;
+function onAir(what, total) {
+  const t0 = Date.now();
+  let seen = false;                       // the status says «tx» a moment after the request returns
+  $("onair-what").textContent = what; $("onair").hidden = false;
+  clearInterval(onAirTimer);
+  onAirTimer = setInterval(() => {
+    const el = (Date.now() - t0) / 1000;
+    seen = seen || (st && st.tx);
+    $("onair-fill").style.width = `${Math.min(100, el / total * 100)}%`;
+    $("onair-time").textContent = `${fmtTime(Math.min(el, total))} / ${fmtTime(total)}`;
+    if ((seen && st && !st.tx) || el > total + 20) {
+      clearInterval(onAirTimer); $("onair").hidden = true;
+      $("tx-msg").textContent = st && st.error ? "" : "fatto ✓";
+    }
+  }, 250);
+}
 $("tx-stop").onclick = () => api("/api/tx/stop").then(applyStatus).catch(() => {});
 
 // ---------------------------------------------------------------- recordings

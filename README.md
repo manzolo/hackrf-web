@@ -42,11 +42,14 @@ and Docker 29. The user interface is in **Italian**; the code and this README ar
     refused;
   - the HackRF's RF amplifier is **always off** (`-a 0`), level capped by `TX_MAX_LEVEL`, CTCSS only from the
     standard list;
-  - every transmission must be confirmed by typing `TRASMETTI` (Italian for "transmit");
+  - every transmission goes through a confirmation dialog (frequency, file, level, and three boxes to tick:
+    authorised on this frequency, callsign in the message, frequency clear);
   - **Stop** cancels at any stage (decoding, between repetitions, on air: terminate, then kill);
   - while transmitting, reception pauses and resumes afterwards (the HackRF is half duplex).
 
 ![Transmit tab: band, frequency with the allowed zone, audio file, tone, level, repetitions](docs/transmit.png)
+
+![The confirmation dialog before going on air](docs/confirm.png)
 
 **Who can give commands.** The page can key a transmitter, so the server does not trust the browser's network
 position alone: the container port is published on **127.0.0.1 only**; every request must carry a `Host` header

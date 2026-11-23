@@ -135,6 +135,10 @@
     <button id="tx-stop" class="big">■ Ferma</button>
     <span id="tx-msg" class="mono"></span>
   </div>
+  <div id="onair" class="onair" hidden>
+    <span class="onair-dot"></span><b>IN ONDA</b><span id="onair-what" class="mono"></span>
+    <div class="onair-bar"><i id="onair-fill"></i></div><span id="onair-time" class="mono"></span>
+  </div>
 
   <details class="warn">
     <summary><b>Prima di trasmettere</b> · licenza, band plan, potenza</summary>
@@ -152,6 +156,27 @@
   <ul id="rec-list" class="rec-list"></ul>
 </section>
 </main>
+<dialog id="tx-dialog">
+  <form method="dialog">
+    <div class="dlg-head"><span class="dlg-ico">📡</span><div><h2>Pronto a trasmettere?</h2><p class="dim">Controlla e conferma: dopo va in onda.</p></div></div>
+    <div class="dlg-freq"><span id="dlg-freq"></span><small>MHz · FM</small></div>
+    <dl class="dlg-facts">
+      <div><dt>Messaggio</dt><dd id="dlg-file"></dd></div>
+      <div><dt>Durata</dt><dd id="dlg-dur"></dd></div>
+      <div><dt>Livello</dt><dd id="dlg-level"></dd></div>
+      <div><dt>Tono</dt><dd id="dlg-tone"></dd></div>
+    </dl>
+    <div class="dlg-checks">
+      <label><input type="checkbox" class="dlg-check"><span>Ho l'<b>autorizzazione</b> a trasmettere su questa frequenza</span></label>
+      <label><input type="checkbox" class="dlg-check"><span>Il mio <b>nominativo</b> è nel messaggio</span></label>
+      <label><input type="checkbox" class="dlg-check"><span>Ho ascoltato: la frequenza è <b>libera</b></span></label>
+    </div>
+    <div class="dlg-actions">
+      <button type="button" id="dlg-cancel" class="big">Annulla</button>
+      <button type="button" id="dlg-ok" class="big danger" disabled>📡 Vai in onda</button>
+    </div>
+  </form>
+</dialog>
 <script src="app.js"></script>
 </body>
 </html>

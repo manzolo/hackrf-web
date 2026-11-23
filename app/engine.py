@@ -183,6 +183,7 @@ class Engine:
                         return
                     demod = self.demod
                 iq = dsp.iq_from_int8(raw)
+                iq -= iq.mean()                           # the HackRF's DC offset: a spike at the tuner centre
                 audio = demod.process(iq)
                 pcm = (audio * 32767).astype("<i2").tobytes()
                 with self.lock:
