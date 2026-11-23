@@ -15,9 +15,11 @@ Made by **IU5VMO** for his own bench and for fellow radio amateurs: take it, use
 ## What it does
 
 - **Listen**: pick a band with one click (broadcast FM, airband, **2 m**, **70 cm**, PMR446), slide through it,
-  watch spectrum, waterfall and audio waveform, record to WAV or raw IQ.
+  watch spectrum, waterfall and audio waveform, record to WAV or raw IQ. On 2 m and 70 cm a coloured strip shows
+  the **band plan** (IARU Region 1, indicative) and the segment you are in.
 - **Transmit** (FM): band, frequency, an audio file up to 7 minutes (wav, mp3, ogg, flac), optional CTCSS tone.
-  Only inside the bands you allow, RF amplifier always off, a confirmation before every transmission.
+  Only inside the bands you allow, RF amplifier always off, a confirmation before every transmission, and a
+  warning when the band plan says the segment is not for FM voice.
 
 | | |
 |---|---|

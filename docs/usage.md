@@ -7,6 +7,10 @@
 - **Bands**: one click on a band tunes to it, sets mode and step, starts listening and makes the slider span the
   whole band; the HackRF retunes by itself as you move. Under the dial, the well-known spots of that band
   (calling channels, APRS, ISS) are one click away.
+- **Band plan**: on 2 m and 70 cm a strip under the slider shows the IARU Region 1 segments (CW, SSB, beacons,
+  digital, repeater inputs and outputs, FM simplex, satellites) and the line below names the one you are in.
+  It is coarse and indicative (`app/static/bandplan.js`): national plans differ, the
+  [IARU R1 pages](https://www.iaru-r1.org/on-the-air/band-plans/) and your national society have the real thing.
 - **Tuning**: slider, ◀ ▶ buttons, ←/→ keys, mouse wheel on the spectrum, click on the waterfall, or type a
   frequency in «Vai a». Anything from 1 MHz to 6 GHz.
 - **Modes**: WFM (broadcast, 50 µs de-emphasis), NFM (amateur FM, CTCSS filtered out), AM (airband).

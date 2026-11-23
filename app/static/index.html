@@ -57,7 +57,9 @@
     <button id="down" class="stepbtn" title="un passo giù (←)">◀</button>
     <div class="slider-wrap">
       <input id="slider" type="range" min="0" max="1" step="1" value="0">
+      <div id="plan" class="plan" hidden></div>
       <div class="range-labels"><span id="lo"></span><span id="mid" class="dim">trascina, oppure ← → sulla tastiera</span><span id="hi"></span></div>
+      <div id="plan-now" class="plan-now" hidden><span class="dot"></span><span id="plan-text"></span><a href="https://www.iaru-r1.org/on-the-air/band-plans/" target="_blank" rel="noopener">band plan IARU R1, indicativo</a></div>
     </div>
     <button id="up" class="stepbtn" title="un passo su (→)">▶</button>
   </div>
@@ -98,7 +100,9 @@
     <div class="dial-main">
       <div class="freq amber"><input id="tx-freq" type="text" inputmode="decimal" value="433.4500" maxlength="9" aria-label="frequenza in MHz"><small>MHz</small></div>
       <div class="bandbar"><div id="tx-zone"></div><div id="tx-mark"></div></div>
+      <div id="tx-plan" class="plan" hidden></div>
       <div class="range-labels"><span id="tx-lo"></span><span id="tx-valid"></span><span id="tx-hi"></span></div>
+      <div id="tx-plan-now" class="plan-now" hidden><span class="dot"></span><span id="tx-plan-text"></span></div>
     </div>
     <div class="dial-side">
       <div class="steps"><button data-d="-25000">−25k</button><button data-d="-12500">−12,5k</button><button data-d="12500">+12,5k</button><button data-d="25000">+25k</button></div>
@@ -167,6 +171,7 @@
       <div><dt>Livello</dt><dd id="dlg-level"></dd></div>
       <div><dt>Tono</dt><dd id="dlg-tone"></dd></div>
     </dl>
+    <div id="dlg-plan" class="plan-now" hidden><span class="dot"></span><span id="dlg-plan-text"></span></div>
     <div class="dlg-checks">
       <label><input type="checkbox" class="dlg-check"><span data-i18n-html="chk1">Ho l'<b>autorizzazione</b> a trasmettere su questa frequenza</span></label>
       <label><input type="checkbox" class="dlg-check"><span data-i18n-html="chk2">Il mio <b>nominativo</b> è nel messaggio</span></label>
@@ -179,6 +184,7 @@
   </form>
 </dialog>
 <script src="i18n.js"></script>
+<script src="bandplan.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

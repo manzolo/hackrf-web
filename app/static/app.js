@@ -89,6 +89,8 @@ function applyStatus(s) {
   sl.min = lo; sl.max = hi; sl.step = step();
   if (document.activeElement !== sl) sl.value = s.freq;
   $("lo").textContent = mhz(lo, 3); $("hi").textContent = mhz(hi, 3);
+  drawPlan($("plan"), lo / 1e6, hi / 1e6, s.freq / 1e6, T);
+  showSegment("plan-now", "plan-text", s.freq / 1e6, false);
   // transmit side
   $("tx-off").hidden = s.tx_enabled;
   $("tx-go").disabled = !s.tx_enabled || s.tx;
@@ -98,6 +100,18 @@ function applyStatus(s) {
   if ($("tx-tone").options.length === 1) for (const t of s.ctcss) $("tx-tone").add(new Option(`${t.toFixed(1)} Hz`, t));
   if ($("tx-bandcards").dataset.lang !== lang) { $("tx-bandcards").dataset.lang = lang; buildTxBands(); }
   updateTxFreq();
+}
+
+// Where we are in the band plan. For transmitting, a segment that is not meant for FM voice is a warning.
+function showSegment(boxId, textId, fMHz, forTx) {
+  const seg = segmentAt(fMHz), box = $(boxId);
+  box.hidden = !seg;
+  if (!seg) return true;
+  const [a, b, kind, text] = seg, okFm = KINDS[kind].fm;
+  box.querySelector(".dot").style.background = KINDS[kind].color;
+  box.classList.toggle("warn-plan", forTx && !okFm);
+  $(textId).textContent = `${a.toFixed(3)}–${b.toFixed(3)} · ${T(text)}` + (forTx && !okFm ? " — " + T("⚠ non è un segmento per la fonia FM") : "");
+  return okFm;
 }
 
 // ---------------------------------------------------------------- websocket
@@ -307,9 +321,12 @@ function updateTxFreq() {
   const v = $("tx-valid");
   if (i < 0) {
     $("tx-zone").style.width = "0"; $("tx-mark").style.left = "-10px"; $("tx-lo").textContent = $("tx-hi").textContent = "";
+    $("tx-plan").hidden = $("tx-plan-now").hidden = true;
     v.textContent = T("✗ fuori dalle bande in cui si può trasmettere"); v.className = "no"; return false;
   }
   const [lo, hi] = st.tx_bands[i], [a, b] = st.tx_ranges[i], pc = (x) => `${(x - lo) / (hi - lo) * 100}%`;
+  drawPlan($("tx-plan"), lo, hi, f, T);
+  showSegment("tx-plan-now", "tx-plan-text", f, true);
   $("tx-zone").style.left = pc(a); $("tx-zone").style.width = `${(b - a) / (hi - lo) * 100}%`;
   $("tx-mark").style.left = pc(f);
   $("tx-lo").textContent = lo.toFixed(3); $("tx-hi").textContent = hi.toFixed(3);
@@ -369,6 +386,7 @@ $("tx-go").onclick = () => {
   $("dlg-dur").textContent = (txDuration ? fmtTime(txDuration) : "?") + (rep > 1 ? " × " + T("{n} volte", { n: rep }) : "");
   $("dlg-level").textContent = T("{a} su {b}", { a: $("tx-level").value, b: $("tx-level").max });
   $("dlg-tone").textContent = tone ? `${tone.toFixed(1)} Hz` : T("nessuno");
+  showSegment("dlg-plan", "dlg-plan-text", txF(), true);
   checks.forEach((c) => { c.checked = false; }); $("dlg-ok").disabled = true;
   dlg.showModal();
 };

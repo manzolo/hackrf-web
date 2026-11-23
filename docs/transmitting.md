@@ -40,8 +40,9 @@ There are no user accounts: do not publish the port on a network.
 
 ## Limits you should know
 
-- The band check knows band edges, not band plans: sub-bands (CW, SSB, satellites, repeater inputs) and your
-  licence conditions are up to you.
+- The server check knows band edges, not band plans. The page shows the band plan and warns, also in the
+  confirmation dialog, when the segment is not meant for FM voice (CW, SSB, beacons, satellites…), but it does
+  not stop you: sub-bands and your licence conditions are up to you.
 - The level is a gain setting, not a calibrated power, and the HackRF output has no band filter (harmonics). For
   tests use the lowest level that works, a dummy load where possible, an external filter for anything more.
 - The HackRF runs at 2.4 MS/s to keep the CPU low; Great Scott Gadgets recommend 8 MS/s or more because of the

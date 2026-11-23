@@ -171,3 +171,17 @@ dialog h2 { margin: 0; font-size: 20px; } dialog p { margin: 2px 0 0; font-size:
 .dlg-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
 .dlg-actions .danger { min-width: 190px; }
 .seg.lang { margin-right: 6px; } .seg.lang button { padding: 3px 9px; font-size: 11px; }
+
+/* band plan */
+.plan { position: relative; height: 10px; border-radius: 5px; overflow: hidden; margin: 2px 0 4px; background: #1a2333; }
+.plan[hidden] { display: none; }
+.plan i { position: absolute; top: 0; bottom: 0; box-shadow: inset -1px 0 0 #070b12; opacity: .85; }
+.plan i:hover { opacity: 1; }
+.plan b { position: absolute; top: -2px; bottom: -2px; width: 3px; margin-left: -1.5px; background: #fff; box-shadow: 0 0 6px #fff; }
+.plan-now { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; margin-top: 6px; }
+.plan-now[hidden] { display: none; }
+.plan-now .dot { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.plan-now a { color: var(--dim); font-size: 11px; margin-left: auto; }
+.plan-now.warn-plan { color: var(--amber); }
+#dlg-plan { margin: 0 0 14px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: #0a111c; }
+#dlg-plan.warn-plan { border-color: #6b4a14; background: #1f180b; }
