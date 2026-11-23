@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+"""A fake hackrf_transfer for the tests: never touches a radio.
+
+-r -   streams int8 I/Q in about real time: noise plus, if FAKE_SIGNAL_HZ (default 145.5 MHz) is inside the window,
+       an FM carrier with a 1 kHz tone (FAKE_DEV Hz of deviation, default 3000).
+       Like the real one it writes a statistics line to stderr for every block (FAKE_STDERR_KB of them at once
+       at the start, default 0): who does not read stderr gets stuck.
+-t F   reads F to the end, sleeps FAKE_TX_SECONDS (default 0.2) and exits 0. FAKE_IGNORE_TERM=1: ignores SIGTERM.
+Every call appends its arguments to FAKE_LOG. FAKE_FAIL=1: "No HackRF boards found." and exit 1.
+FAKE_DIE_AFTER=N (receive): exits after N blocks, as an unplugged HackRF does.
+"""
+import os
+import signal
+import sys
+import time
+
+import numpy as np
+
+args = sys.argv[1:]
+log = os.environ.get("FAKE_LOG")
+if log:
+    with open(log, "a") as f:
+        f.write(" ".join(args) + "\n")
+if os.environ.get("FAKE_FAIL") == "1":
+    print("hackrf_open() failed: HACKRF_ERROR_NOT_FOUND (-5)\nNo HackRF boards found.", file=sys.stderr)
+    sys.exit(1)
+
+
+def opt(name, default=None):
+    return args[args.index(name) + 1] if name in args else default
+
+
+if "-t" in args:
+    if os.environ.get("FAKE_IGNORE_TERM") == "1":
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+    src = sys.stdin.buffer if opt("-t") == "-" else open(opt("-t"), "rb")
+    got = 0
+    while chunk := src.read(1 << 20):
+        got += len(chunk)
+    if log:
+        with open(log + ".bytes", "a") as f:
+            f.write(f"{got}\n")
+    time.sleep(float(os.environ.get("FAKE_TX_SECONDS", "0.2")))
+    sys.exit(0)
+
+center = float(opt("-f"))
+rate = float(opt("-s"))
+sig = float(os.environ.get("FAKE_SIGNAL_HZ", "145500000"))
+dev = float(os.environ.get("FAKE_DEV", "3000"))
+off = sig - center
+inside = abs(off) < rate * 0.45
+rng = np.random.default_rng(7)
+n = int(rate // 20)
+t0 = 0
+phase = 0.0
+out = sys.stdout.buffer
+sys.stderr.write(("x" * 1023 + "\n") * int(os.environ.get("FAKE_STDERR_KB", "0")))
+sys.stderr.flush()
+die_after = int(os.environ.get("FAKE_DIE_AFTER", "0"))
+blocks = 0
+start = time.time()
+try:
+    while True:
+        k = np.arange(t0, t0 + n)
+        x = (rng.normal(0, 0.02, n) + 1j * rng.normal(0, 0.02, n))
+        if inside:
+            inst = off + dev * np.sin(2 * np.pi * 1000 * k / rate)
+            ph = phase + 2 * np.pi * np.cumsum(inst) / rate
+            phase = float(ph[-1] % (2 * np.pi))
+            x = x + 0.4 * np.exp(1j * ph)
+        b = np.empty(2 * n, np.int8)
+        b[0::2] = np.clip(np.round(x.real * 127), -127, 127)
+        b[1::2] = np.clip(np.round(x.imag * 127), -127, 127)
+        out.write(b.tobytes())
+        out.flush()
+        sys.stderr.write(" 4.8 MiB / 1.000 sec =  4.8 MiB/second, average power -10.0 dBfs\n")
+        sys.stderr.flush()
+        blocks += 1
+        if die_after and blocks >= die_after:
+            sys.stderr.write("hackrf_is_streaming() result: streaming terminated (-1004)\n")
+            sys.exit(1)
+        t0 += n
+        lag = t0 / rate - (time.time() - start)
+        if lag > 0:
+            time.sleep(lag)
+except (BrokenPipeError, KeyboardInterrupt):
+    pass

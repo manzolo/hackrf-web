@@ -1,0 +1,19 @@
+services:
+  hackrf-web:
+    build: { context: ., target: base }
+    image: hackrf-web:latest
+    container_name: hackrf-web
+    # only from this PC: the page can transmit
+    ports: ["127.0.0.1:8073:8073"]
+    user: "${UID:-1000}:${GID:-1000}"
+    group_add: ["${PLUGDEV_GID:-46}"]          # the HackRF node is root:plugdev 0660
+    device_cgroup_rules: ["c 189:* rmw"]       # USB devices, also after unplug/replug
+    volumes:
+      - /dev/bus/usb:/dev/bus/usb
+      - ./recordings:/data/recordings
+      - /etc/localtime:/etc/localtime:ro      # file names in local time
+    environment:
+      TX_ENABLE: "${TX_ENABLE:-0}"               # 1 to allow transmitting (off unless you turn it on)
+      TX_BANDS: "${TX_BANDS:-144-146,430-434}"
+      TX_MAX_LEVEL: "${TX_MAX_LEVEL:-30}"
+    restart: "no"

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HackRF Web</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="22" r="2.6"/><path d="M9 17a10 10 0 0 1 14 0M4.5 12.5a16.5 16.5 0 0 1 23 0" fill="none" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <h1>HackRF <span>Web</span></h1>
+  </div>
+  <div class="leds">
+    <span id="pill-rx" class="led">RX</span>
+    <span id="pill-tx" class="led tx">TX</span>
+    <span id="pill-rec" class="led rec">REC</span>
+    <span id="pill-ws" class="led link">offline</span>
+  </div>
+</header>
+<div id="error" class="error" hidden></div>
+
+<nav class="tabs">
+  <button data-tab="rx" class="active">🎧 Ascolto</button>
+  <button data-tab="tx">📡 Trasmissione</button>
+  <button data-tab="rec">💾 Registrazioni</button>
+</nav>
+
+<main>
+<!-- ============================================================ ASCOLTO -->
+<section id="tab-rx" class="tab active">
+  <div class="label">Cosa vuoi ascoltare?</div>
+  <div id="bands" class="bands"></div>
+
+  <div class="dial">
+    <div class="dial-main">
+      <div class="dial-top"><span id="band-name" class="badge">Radio FM</span><span id="mode-badge" class="badge mode">WFM</span><span id="sq-badge" class="badge" hidden>squelch chiuso</span></div>
+      <div class="freq"><span id="freq">100.0000</span><small>MHz</small></div>
+      <div id="band-hint" class="dial-hint"></div>
+    </div>
+    <div class="dial-side">
+      <div class="smeter"><div id="smeter-bar"></div><span id="rssi">— dBFS</span></div>
+      <div class="transport">
+        <button id="rx-toggle" class="big primary">▶ Ascolta</button>
+        <button id="rec-toggle" class="big">● Registra</button>
+      </div>
+      <label class="check"><input id="rec-iq" type="checkbox"> salva anche l'IQ grezzo</label>
+      <div id="rec-time" class="mono dim"></div>
+    </div>
+  </div>
+
+  <div id="channels" class="channels"></div>
+
+  <div class="slider-row">
+    <button id="down" class="stepbtn" title="un passo giù (←)">◀</button>
+    <div class="slider-wrap">
+      <input id="slider" type="range" min="0" max="1" step="1" value="0">
+      <div class="range-labels"><span id="lo"></span><span id="mid" class="dim">trascina, oppure ← → sulla tastiera</span><span id="hi"></span></div>
+    </div>
+    <button id="up" class="stepbtn" title="un passo su (→)">▶</button>
+  </div>
+
+  <div class="scopes">
+    <div class="scope-box"><span class="cap">Spettro · 2,4 MHz attorno alla frequenza</span><canvas id="spectrum" height="170"></canvas></div>
+    <div class="scope-box"><span class="cap">Waterfall · clic per sintonizzare, rotella per un passo</span><canvas id="waterfall" height="190"></canvas></div>
+    <div class="scope-box"><span class="cap">Forma d'onda dell'audio</span><canvas id="scope" height="90"></canvas></div>
+  </div>
+
+  <div class="grid">
+    <div class="field"><span>Vai a (MHz)</span>
+      <span class="inline"><input id="freq-in" type="number" step="0.0001" placeholder="145.500"><button id="go">Vai</button></span></div>
+    <div class="field"><span>Modo</span>
+      <div id="mode" class="seg"><button data-v="wfm">WFM</button><button data-v="nfm">NFM</button><button data-v="am">AM</button></div></div>
+    <div class="field"><span>Passo</span>
+      <div id="step" class="seg"><button data-v="5000">5k</button><button data-v="12500">12,5k</button><button data-v="25000">25k</button><button data-v="100000">100k</button></div></div>
+    <div class="field"><span>Squelch <output id="sq-out">aperto</output></span>
+      <input id="squelch" type="range" min="-100" max="0" step="1" value="-100"></div>
+    <div class="field"><span>Volume <output id="vol-out">70%</output></span>
+      <input id="volume" type="range" min="0" max="100" step="1" value="70"></div>
+    <div class="field"><span>Guadagno LNA / VGA</span>
+      <span class="inline"><select id="lna"></select><select id="vga"></select></span></div>
+  </div>
+  <p class="hint">Amplificatore RF dell'HackRF sempre spento. L'ingresso dell'HackRF regge al massimo −5 dBm: se una radio trasmette vicino, togli l'antenna dall'HackRF, e non collegarlo mai a un trasmettitore senza un attenuatore adeguato.</p>
+</section>
+
+<!-- ============================================================ TRASMISSIONE -->
+<section id="tab-tx" class="tab">
+  <div id="tx-off" class="error" hidden>La trasmissione è <b>disabilitata</b>. Per abilitarla: <code>TX_ENABLE=1</code>
+    nel file <code>.env</code> accanto a <code>compose.yaml</code>, poi <code>make up</code>.</div>
+
+  <div class="label">1 · Banda</div>
+  <div id="tx-bandcards" class="bandcards"></div>
+
+  <div class="label">2 · Frequenza</div>
+  <div class="dial tx-dial">
+    <div class="dial-main">
+      <div class="freq amber"><input id="tx-freq" type="text" inputmode="decimal" value="433.4500" maxlength="9" aria-label="frequenza in MHz"><small>MHz</small></div>
+      <div class="bandbar"><div id="tx-zone"></div><div id="tx-mark"></div></div>
+      <div class="range-labels"><span id="tx-lo"></span><span id="tx-valid"></span><span id="tx-hi"></span></div>
+    </div>
+    <div class="dial-side">
+      <div class="steps"><button data-d="-25000">−25k</button><button data-d="-12500">−12,5k</button><button data-d="12500">+12,5k</button><button data-d="25000">+25k</button></div>
+      <button id="tx-listen" title="sintonizza l'ascolto su questa frequenza">🎧 Ascolta prima qui</button>
+    </div>
+  </div>
+
+  <div class="label">3 · Messaggio</div>
+  <label id="drop" class="drop">
+    <input id="tx-file" type="file" accept="audio/*,.wav,.mp3,.ogg,.flac" hidden>
+    <div id="drop-empty">
+      <div class="drop-icon">🎙️</div>
+      <b>Trascina qui un file audio</b> oppure clicca per sceglierlo
+      <div class="dim">wav, mp3, ogg, flac · massimo <span id="tx-max">7</span> minuti</div>
+    </div>
+    <div id="drop-file" hidden>
+      <div class="drop-icon">🎵</div>
+      <div class="drop-info"><b id="file-name"></b><div id="file-meta" class="dim mono"></div></div>
+      <audio id="file-play" controls preload="metadata"></audio>
+      <button id="file-clear" type="button" title="togli il file">✕</button>
+    </div>
+  </label>
+
+  <div class="label">4 · Come</div>
+  <div class="grid">
+    <div class="field"><span>Tono CTCSS</span><select id="tx-tone"><option value="0">nessuno</option></select></div>
+    <div class="field"><span>Livello <output id="tx-level-out">10</output></span>
+      <input id="tx-level" type="range" min="0" max="30" step="1" value="10"></div>
+    <div class="field"><span>Ripetizioni</span>
+      <div id="tx-repeat" class="seg"><button data-v="1" class="on">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button><button data-v="5">5</button></div></div>
+  </div>
+
+  <div class="tx-go-row">
+    <button id="tx-go" class="big danger">📡 Trasmetti</button>
+    <button id="tx-stop" class="big">■ Ferma</button>
+    <span id="tx-msg" class="mono"></span>
+  </div>
+
+  <details class="warn">
+    <summary><b>Prima di trasmettere</b> · licenza, band plan, potenza</summary>
+    Trasmettere richiede una licenza da radioamatore valida nel tuo Paese (in Italia: patente <i>e</i> autorizzazione
+    generale con nominativo) e il rispetto del band plan: il programma controlla solo che la frequenza stia nelle bande
+    <span id="tx-bands"></span>, non le sottobande. Il nominativo deve essere nel messaggio; ascolta prima che la
+    frequenza sia libera. Il livello non è una potenza tarata e l'uscita non è filtrata: per le prove usa il livello più
+    basso che basta, meglio su carico fittizio. Mentre trasmette, l'ascolto si ferma e poi riparte.
+  </details>
+</section>
+
+<!-- ============================================================ REGISTRAZIONI -->
+<section id="tab-rec" class="tab">
+  <div class="controls"><button id="rec-refresh">↻ Aggiorna</button><span class="dim">Le registrazioni stanno nella cartella <code>recordings/</code>.</span></div>
+  <ul id="rec-list" class="rec-list"></ul>
+</section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

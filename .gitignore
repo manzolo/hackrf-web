@@ -1,0 +1,6 @@
+recordings/
+__pycache__/
+.pytest_cache/
+*.pyc
+.check-public.local
+.env
